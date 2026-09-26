@@ -1,0 +1,8 @@
+out/
+build/
+dist/
+*.class
+invoicepilot-data.tsv
+exports/
+.idea/
+.vscode/

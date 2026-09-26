@@ -1,12 +1,14 @@
 # InvoicePilot
 
-InvoicePilot is a serious object-oriented Java invoicing MVP for freelancers and small businesses. It runs as a command-line application, stores data locally, calculates invoice totals, tracks status, and exports printable HTML invoices.
+InvoicePilot is a serious object-oriented Java invoicing web app for freelancers and small businesses. It includes a browser dashboard, local storage, invoice calculations, status tracking, printable HTML invoice export, and a CLI for power users.
 
 The project is intentionally dependency-free so it can build with plain `javac` and `java`.
 
 ## Features
 
 - Object-oriented domain model: `Client`, `Invoice`, `LineItem`, `Money`, `InvoiceStatus`
+- Java web app powered by the built-in JDK HTTP server
+- Browser dashboard for clients, invoices, line items, status, and export
 - Local file storage using a simple TSV data file
 - Add and list clients
 - Create invoices
@@ -28,6 +30,19 @@ From the project root:
 
 ```powershell
 .\scripts\run.ps1 help
+```
+
+## Start The Web App
+
+```powershell
+.\scripts\build.ps1
+.\scripts\web.ps1
+```
+
+Then open:
+
+```text
+http://localhost:8080
 ```
 
 ## Example Workflow
@@ -70,6 +85,8 @@ domain/     core OOP business model
 service/    use-case layer
 storage/    local persistence
 export/     printable invoice output
+web/        HTTP API and web server
+resources/  browser UI
 ```
 
 ## Author

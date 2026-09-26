@@ -27,3 +27,9 @@ The domain layer owns the business rules:
 ## CLI Layer
 
 `InvoicePilotApp` parses commands and delegates to services. This keeps the command-line interface thin.
+
+## Web Layer
+
+`InvoicePilotWebServer` uses the JDK's built-in HTTP server. It serves the static browser interface and exposes a JSON API for clients, invoices, line items, status transitions, summary metrics, and invoice export.
+
+The browser UI lives in `src/main/resources/public` and stays focused on workflow: creating clients, creating invoices, adding line items, marking invoices sent or paid, and opening printable invoice output.

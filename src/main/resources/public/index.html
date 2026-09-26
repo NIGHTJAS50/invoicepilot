@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>InvoicePilot</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">IP</div>
+      <div>
+        <strong>InvoicePilot</strong>
+        <span>Billing workspace</span>
+      </div>
+    </div>
+    <nav>
+      <a href="#dashboard" class="active">Dashboard</a>
+      <a href="#clients">Clients</a>
+      <a href="#invoices">Invoices</a>
+      <a href="#export">Export</a>
+    </nav>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div>
+        <h1>Invoices</h1>
+        <p>Manage clients, invoice work, and track payment status.</p>
+      </div>
+      <button id="refreshBtn" class="ghost">Refresh</button>
+    </header>
+
+    <section id="dashboard" class="metrics">
+      <article>
+        <span>Clients</span>
+        <strong id="metricClients">0</strong>
+      </article>
+      <article>
+        <span>Invoices</span>
+        <strong id="metricInvoices">0</strong>
+      </article>
+      <article>
+        <span>Open</span>
+        <strong id="metricOpen">0</strong>
+      </article>
+      <article>
+        <span>Revenue</span>
+        <strong id="metricRevenue">USD 0.00</strong>
+      </article>
+    </section>
+
+    <section class="workspace">
+      <div class="panel" id="clients">
+        <div class="panel-head">
+          <h2>Clients</h2>
+          <span id="clientCount">0 records</span>
+        </div>
+        <form id="clientForm" class="form-grid">
+          <input name="name" placeholder="Client name" required>
+          <input name="email" type="email" placeholder="Email" required>
+          <input name="company" placeholder="Company">
+          <input name="address" placeholder="Address">
+          <button type="submit">Add Client</button>
+        </form>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>Company</th><th>ID</th></tr></thead>
+            <tbody id="clientsTable"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel" id="invoices">
+        <div class="panel-head">
+          <h2>Invoices</h2>
+          <span id="invoiceCount">0 records</span>
+        </div>
+        <form id="invoiceForm" class="form-grid invoice-form">
+          <select name="clientId" required>
+            <option value="">Select client</option>
+          </select>
+          <input name="invoiceNumber" placeholder="Invoice number" required>
+          <input name="dueDate" type="date" required>
+          <input name="taxRate" type="number" min="0" step="0.01" placeholder="Tax rate, e.g. 0.16">
+          <select name="currency">
+            <option>USD</option>
+            <option>KES</option>
+            <option>EUR</option>
+            <option>GBP</option>
+          </select>
+          <button type="submit">Create Invoice</button>
+        </form>
+        <div id="invoiceList" class="invoice-list"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Add Line Item</h2>
+          <span>Attach work to an invoice</span>
+        </div>
+        <form id="itemForm" class="form-grid">
+          <select name="invoiceId" required>
+            <option value="">Select invoice</option>
+          </select>
+          <input name="description" placeholder="Description" required>
+          <input name="quantity" type="number" min="0.01" step="0.01" placeholder="Qty" required>
+          <input name="price" type="number" min="0" step="0.01" placeholder="Unit price" required>
+          <select name="currency">
+            <option>USD</option>
+            <option>KES</option>
+            <option>EUR</option>
+            <option>GBP</option>
+          </select>
+          <button type="submit">Add Item</button>
+        </form>
+      </div>
+    </section>
+
+    <div id="toast" class="toast" hidden></div>
+  </main>
+
+  <script src="/app.js"></script>
+</body>
+</html>

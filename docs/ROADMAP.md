@@ -8,6 +8,8 @@
 - Calculate totals and tax
 - Track sent and paid status
 - Export printable HTML
+- Browser dashboard
+- JSON API
 - Dependency-free Java build
 
 ## Next Steps
@@ -18,6 +20,7 @@
 - Business profile settings
 - Invoice numbering sequences
 - Search and filters
-- Desktop UI with JavaFX
+- Authentication for hosted deployments
+- PDF export from the web UI
 - SQLite storage option
 - CSV import/export

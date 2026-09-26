@@ -9,12 +9,16 @@ import com.nightjas50.invoicepilot.domain.Money;
 import com.nightjas50.invoicepilot.export.HtmlInvoiceExporter;
 import com.nightjas50.invoicepilot.service.InvoiceService;
 import com.nightjas50.invoicepilot.storage.InvoicePilotStore;
+import com.nightjas50.invoicepilot.web.InvoicePilotWebServer;
 
 import java.math.BigDecimal;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.List;
 
 public final class InvoicePilotTests {
     public static void main(String[] args) throws Exception {
@@ -22,6 +26,7 @@ public final class InvoicePilotTests {
         persistsClientsAndInvoices();
         cliCreatesUsableDataFile();
         exportsHtmlInvoice();
+        servesWebApi();
         System.out.println("All InvoicePilot tests passed");
     }
 
@@ -82,6 +87,32 @@ public final class InvoicePilotTests {
         String content = Files.readString(html);
         assertTrue(content.contains("Invoice INV-004"));
         assertTrue(content.contains("USD 750.00"));
+    }
+
+    private static void servesWebApi() throws Exception {
+        Path data = Files.createTempFile("invoicepilot-web", ".tsv");
+        Path publicDir = Files.createTempDirectory("invoicepilot-public");
+        Files.writeString(publicDir.resolve("index.html"), "<h1>InvoicePilot</h1>");
+        InvoicePilotWebServer server = new InvoicePilotWebServer(0, data, publicDir);
+        server.start();
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            URI base = URI.create("http://localhost:" + server.port());
+            HttpRequest createClient = HttpRequest.newBuilder(base.resolve("/api/clients"))
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString("{\"name\":\"Web Client\",\"email\":\"web@example.com\"}"))
+                    .build();
+            HttpResponse<String> created = client.send(createClient, HttpResponse.BodyHandlers.ofString());
+            assertEquals(201, created.statusCode());
+            assertTrue(created.body().contains("Web Client"));
+
+            HttpRequest summary = HttpRequest.newBuilder(base.resolve("/api/summary")).GET().build();
+            HttpResponse<String> response = client.send(summary, HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, response.statusCode());
+            assertTrue(response.body().contains("\"clients\":1"));
+        } finally {
+            server.stop();
+        }
     }
 
     private static void assertEquals(Object expected, Object actual) {

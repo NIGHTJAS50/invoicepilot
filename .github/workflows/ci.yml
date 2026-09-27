@@ -1,0 +1,30 @@
+name: Java CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Run tests
+        shell: pwsh
+        run: ./scripts/test.ps1
+      - name: Scan dependencies and source
+        uses: github/codeql-action/init@v3
+        with:
+          languages: java
+      - uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:java"
+      - name: Build container
+        run: docker build --tag invoicepilot:ci .

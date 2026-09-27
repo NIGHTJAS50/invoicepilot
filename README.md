@@ -79,6 +79,16 @@ All InvoicePilot tests passed
 
 ## Architecture
 
+```mermaid
+flowchart LR
+	CLI[CLI commands] --> Service[InvoiceService]
+	Web[HTTP API] --> Service
+	Service --> Domain[Client / Invoice / Money]
+	Service --> Store[(TSV store)]
+	Service --> Export[HTML exporter]
+	Web --> Browser[Browser dashboard]
+```
+
 ```text
 cli/        command-line application
 domain/     core OOP business model
@@ -88,6 +98,16 @@ export/     printable invoice output
 web/        HTTP API and web server
 resources/  browser UI
 ```
+
+## Design Trade-offs
+
+- Plain Java and the JDK HTTP server keep the project dependency-free and easy to audit, at the cost of fewer framework conveniences.
+- TSV storage is transparent and portable for a small-business MVP, but should be replaced by a transactional database for concurrent production workloads.
+- Domain objects own invoice calculations and status transitions so the CLI and HTTP adapters share the same business rules.
+
+## API Contract
+
+The web adapter exposes JSON endpoints including `POST /api/clients`, `GET /api/summary`, invoice creation and status commands, plus static HTML under `/`. CLI commands mirror these use cases: `add-client`, `create-invoice`, `add-item`, `mark-sent`, `show`, and `export-html`.
 
 ## Author
 

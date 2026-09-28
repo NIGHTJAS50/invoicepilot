@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: read
+  security-events: write
 
 jobs:
   test:
@@ -23,6 +24,12 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java
+      - name: Build Java sources for CodeQL
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path out/codeql-classes | Out-Null
+          $sources = (Get-ChildItem -Recurse -File src/main/java -Filter *.java).FullName
+          javac -d out/codeql-classes $sources
       - uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java"
